@@ -1,0 +1,75 @@
+#!/bin/bash
+set -e  # exit on first error
+
+
+# text colors 
+Green='\033[0;32m'   
+Orange='\033[0;33m'  
+Blue='\033[0;34m'   
+NoColor='\033[0m' 
+
+nProcessors=(1 1 2 4 8)
+
+for closure in IBOF
+do
+	mkdir $closure
+	cp -r base $closure
+	cd $closure
+
+	echo -e "${Orange}Changing Closure Model${NoColor}"
+	sed -i "s/closureModel IBOF;/closureModel "$closure";/g" base/system/controlDict
+
+    
+	for i in 1 2 3 4 5
+	do
+		folder="mesh$i"
+
+		nElements=$(( 2**($i+6) ))
+
+		nDomains=${nProcessors[$i-1]}
+
+		echo $nDomains
+
+		cp -r base $folder
+
+		echo -e "${Orange}Going into $folder ${NoColor}"
+		cd $folder
+
+		if [ $nDomains -gt 1 ] 
+		then
+			sed -i '/runApplication decomposePar/s/^#//g' Allrun
+			sed -i '/runApplication reconstructPar/s/^#//g' Allrun
+			sed -i '/# rm -rf processor*/s/^#//g' Allrun
+			sed -i "s/runApplication \$(getApplication)/runParallel \$(getApplication)/g" Allrun
+
+			echo -e "${Orange}Changing decomposeParDict${NoColor}"
+			sed -i "s/numberOfSubdomains 2;/numberOfSubdomains "$nDomains";/g" system/decomposeParDict	
+	    fi
+
+		echo -e "${Blue}Cleaning the folder${NoColor}"
+
+		./Allclean
+
+		echo -e "${Orange}Changing blockMeshDict${NoColor}"
+
+		sed -i "s/hex (0 2 3 1 4 6 7 5) (128 1 128) simpleGrading (1 1 1)/hex (0 2 3 1 4 6 7 5) ("$nElements" 1 128) simpleGrading (1 1 1)/g" system/blockMeshDict
+
+		echo -e "${Orange}Changing samplingDict${NoColor}"
+		
+		sed -i "s/nPoints 32;/nPoints "$nElements";/g" system/sampling
+
+		echo -e "${Orange}Running case${NoColor}"
+
+		./Allrun
+
+		echo -e "${Green}Finished with $folder ${NoColor}"
+
+		cd ../
+	done
+
+	echo -e "${Green}Finished computation for: $closure ${NoColor}"
+	cd ../
+
+done
+
+chmod +x PostProcessData/runBatch_disk

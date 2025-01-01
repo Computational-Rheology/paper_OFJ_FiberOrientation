@@ -1,0 +1,18 @@
+fiberOrientationModels/fiberOrientationModel/fiberOrientationModel.C
+fiberOrientationModels/fiberOrientationModel/fiberOrientationModelNew.C
+
+fiberOrientationModels/FT/folgarTucker.C
+fiberOrientationModels/FT_RSC/FT_RSC.C
+fiberOrientationModels/MRD/MRD.C
+fiberOrientationModels/RPR/RPR.C
+fiberOrientationModels/iARD_RPR/iARD_RPR.C
+fiberOrientationModels/pARD_RPR/pARD_RPR.C
+
+closureModels/closureModel/closureModel.C
+closureModels/closureModel/closureModelNew.C
+
+closureModels/hybrid/hybrid.C
+closureModels/IBOF/IBOF.C
+closureModels/ORE/ORE.C
+
+LIB = $(FOAM_USER_LIBBIN)/libfiberOrientationModeling
