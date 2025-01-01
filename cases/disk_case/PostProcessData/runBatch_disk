@@ -1,0 +1,64 @@
+#!/bin/bash
+set -e  # exit on first error
+
+# Note: run the script as: ./runBatch_disk
+# Note: All .csv file must be in the script folder
+# Note: Activate anaconda for running this script
+# Note: Activate OF2212 for running this script
+
+# text colors 
+Green='\033[0;32m'   
+Orange='\033[0;33m'  
+Blue='\033[0;34m'   
+NoColor='\033[0m' 
+
+# Get directory from where the script is being run
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+
+# Loop 
+# for closure in IBOF ORE
+for closure in IBOF
+do
+    # Collect .csv file corresponding to the closure (hybrid IBOF and ORE)
+    dataFileName=$(find ~+ -type f -name "${closure}*.csv")
+
+    # Tell the user which file is currently being used
+    echo "Using file: " $dataFileName
+
+    # Go to the folder
+    cd ../$closure
+
+    # Collect and sort all folder names with partial match "mesh*" 
+    meshFolders=$(find . -type d -name "mesh*" | sort)
+    # meshFolders=(mesh5)
+
+    # Loop through mesh folders
+    for i in $meshFolders;
+    do
+        currFolder=$(basename $i);
+        echo -e "${Orange}Going into $currFolder ${NoColor}"
+
+        # Go inside folder
+        cd ${i}
+
+        # Execute the sample dict for the latestTime
+        postProcess -func sampling -latestTime 
+
+        # Catch latest time step folder
+        latestTimeFolder=$(ls  postProcessing/sampling -Art | tail -n 1)
+
+        # path to postProcessing/sampling/latestTimeStep
+        latestTimeFolderPath=postProcessing/sampling/
+        latestTimeFolderPath+="${latestTimeFolder}"
+
+        # Run python script for plotting
+        python3 ${SCRIPT_DIR}/plot_disk.py ${latestTimeFolderPath}/sampling1_U_A2.csv $dataFileName '0,1,2,3,4,5'
+
+        echo -e "${Blue}Leaving $currFolder ${NoColor}"
+        cd ../
+    done
+
+    echo -e "${Green}Returning into $(basename ${SCRIPT_DIR}) ${NoColor}"
+    cd ${CurrPath}
+done
+

@@ -1,0 +1,14 @@
+#!/bin/bash
+set -e  # exit on first error
+
+
+# text colors
+Blue='\033[0;34m'   
+NoColor='\033[0m' 
+
+echo -e "${Blue}Cleaning folder${NoColor}"
+
+rm -rf hybrid IBOF ORE 
+
+cd base/
+./Allclean

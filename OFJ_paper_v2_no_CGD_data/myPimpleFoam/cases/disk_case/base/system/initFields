@@ -1,0 +1,140 @@
+initFields                         
+{                                  
+    type coded;                       
+    libs (utilityFunctionObjects);    
+    executeControl      none;
+    writeControl        none;      
+                                    
+    name initFields; 
+
+                    
+    codeExecute
+    #{
+        Info << "Initializing Flux" << endl;
+
+        const scalar Q_tot = 0.000134774;
+        const scalar b = 0.0015;
+        const scalar angle = 5;
+        const scalar pi = constant::mathematical::pi;
+
+        const scalar Q = ((Q_tot*pi*angle)/180.0)/(2*pi);
+
+        surfaceScalarField phi
+        (
+            IOobject
+            (
+                "phi",
+                mesh().time().timeName(),
+                mesh(),
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh(),
+            dimensionedScalar(dimVolume/dimTime, 0.0)
+        );
+
+        const surfaceVectorField& Cf = mesh().Cf();
+        const surfaceVectorField& Sf = mesh().Sf();
+
+        for(label faceI=0; faceI<phi.size(); faceI++)
+        {
+            const scalar x = Cf[faceI].x();
+            const scalar y = Cf[faceI].y();
+            const scalar z = Cf[faceI].z();
+            const scalar theta = ::atan2(y, x);
+            const scalar r = ::sqrt(x*x + y*y);
+            const scalar z_bar = z - b;
+
+            const scalar Ur = ((3.0*Q)/(8.0*pi*r*b))*(1 - (z_bar*z_bar)/(b*b));
+            const vector U (Ur*cos(theta), Ur*sin(theta), 0);
+
+            phi[faceI] = U & Sf[faceI];
+        }
+
+        for(label patchI = 0; patchI < phi.boundaryField().size(); patchI++)
+        {
+            if (phi.boundaryField()[patchI].type() == "calculated")
+            {
+                for(label faceI = 0; faceI < phi.boundaryField()[patchI].size(); faceI++)
+                {
+                    const scalar x = Cf.boundaryField()[patchI][faceI].x();
+                    const scalar y = Cf.boundaryField()[patchI][faceI].y();
+                    const scalar z = Cf.boundaryField()[patchI][faceI].z();
+                    const scalar theta = ::atan2(y, x);
+                    const scalar r = ::sqrt(x*x + y*y);
+                    const scalar z_bar = z - b;
+
+                    const scalar Ur = ((3.0*Q)/(8.0*pi*r*b))*(1 - (z_bar*z_bar)/(b*b));
+                    const vector U (Ur*cos(theta), Ur*sin(theta), 0);
+
+                    phi.boundaryFieldRef()[patchI][faceI] = U & Sf.boundaryField()[patchI][faceI];
+                }
+            }
+        }
+
+        phi.ref().oriented() = Sf.oriented();
+        phi.write();
+
+        Info << "Finished flux" << endl;
+
+        Info << "Initializing velocity gradient" << endl;
+
+        const volVectorField& C = mesh().C();
+
+        volTensorField L
+        (
+            IOobject
+            (
+                "fiberModel_L",
+                mesh().time().timeName(),
+                mesh(),
+                IOobject::NO_READ,
+                IOobject::NO_WRITE
+            ),
+            mesh(),
+            dimensionedTensor(dimVelocity/dimLength, Foam::Zero)
+        );
+
+
+        for(label cellI=0; cellI<L.size(); cellI++)
+        {
+            const scalar x = C[cellI].x();
+            const scalar y = C[cellI].y();
+            const scalar z = C[cellI].z();
+            const scalar r = ::sqrt(x*x + y*y);
+            const scalar z_bar = z - b;
+
+            const scalar C = ((3.0*Q)/(8.0*pi*r*b));
+            
+            L[cellI] = C*tensor(-(1.0/r)*(1.0 - (z_bar*z_bar)/(b*b)), 0, 0,
+                                0,(1.0/r)*(1.0 - (z_bar*z_bar)/(b*b)), 0,
+                                -(2.0/b)*(z_bar/b), 0, 0);
+        }
+
+        for(label patchI = 0; patchI < L.boundaryField().size(); patchI++)
+        {
+            if (L.boundaryField()[patchI].type() == "calculated")
+            {
+                for(label faceI = 0; faceI < L.boundaryField()[patchI].size(); faceI++)
+                {
+                    const scalar x = Cf.boundaryField()[patchI][faceI].x();
+                    const scalar y = Cf.boundaryField()[patchI][faceI].y();
+                    const scalar z = Cf.boundaryField()[patchI][faceI].z();
+                    const scalar r = ::sqrt(x*x + y*y);
+                    const scalar z_bar = z - b;
+
+                    const scalar C = ((3.0*Q)/(8.0*pi*r*b));
+
+                    L.boundaryFieldRef()[patchI][faceI] = C*tensor(-(1.0/r)*(1.0 - (z_bar*z_bar)/(b*b)), 0, 0,
+                                                                    0,(1.0/r)*(1.0 - (z_bar*z_bar)/(b*b)), 0,
+                                                                    -(2.0/b)*(z_bar/b), 0, 0);
+                    
+                }
+            }
+        }
+
+        L.write();
+        Info << "Finish velocity gradient" << endl;
+
+    #};
+}         

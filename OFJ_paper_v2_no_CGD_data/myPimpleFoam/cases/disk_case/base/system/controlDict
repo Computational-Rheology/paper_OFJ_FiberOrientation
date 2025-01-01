@@ -1,0 +1,87 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2212                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+application     myPimpleFoam;
+
+startFrom       latestTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         200;
+
+deltaT          1e-4;
+
+writeControl    adjustableRunTime;
+
+writeInterval   10;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  13;
+
+writeCompression off;
+
+timeFormat      general;
+
+timePrecision   8;
+
+adjustTimeStep  true;
+
+maxCo           0.5;
+
+functions
+{
+    FiberModeling
+    {
+        type            fiberOrientationModeling;
+        libs            (libnewSolverFunctionObjects);
+        errors strict;
+        executeControl      timeStep;
+        executeInterval     1;
+
+        solutionProperties
+        {
+            nCorr               1;
+            normalize           no;
+            updateFlowFields    false;  // Imposing the gradient
+        }
+
+        fiberOrientationProperties
+        {
+            model       folgarTucker;
+            xi          1;
+
+            closureModel IBOF;
+
+            folgarTuckerProperties
+            {
+                CI      0.001;
+            }
+        }
+    }
+
+    #include "steadyStateFO"
+    
+    #include "initFields"
+}
+
+
+
+// ************************************************************************* //

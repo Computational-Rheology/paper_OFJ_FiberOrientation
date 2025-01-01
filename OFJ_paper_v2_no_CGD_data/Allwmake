@@ -1,0 +1,19 @@
+#!/bin/sh
+cd "${0%/*}" || exit                                # Run from this directory
+#------------------------------------------------------------------------------
+
+set -e
+
+# Note
+# Make all <All*> files executable 
+# If they already appear as executable, comment the next line.
+find ./*/ -type f -name "All*" -exec chmod +x {} \;
+
+cd fiberOrientation
+./Allwmake
+
+cd ../myPimpleFoam
+wmake
+
+
+#------------------------------------------------------------------------------
