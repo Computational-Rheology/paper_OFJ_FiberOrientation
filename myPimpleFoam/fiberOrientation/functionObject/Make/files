@@ -1,3 +1,0 @@
-fiberOrientationModeling.C
-
-LIB = $(FOAM_USER_LIBBIN)/libnewSolverFunctionObjects
