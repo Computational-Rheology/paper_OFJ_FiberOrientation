@@ -18,13 +18,14 @@ SCRIPT_DIR=$(dirname "$LINKED_FILE_PATH")
 
 # Name of the model to append in the output images 
 # *(change this for each model in simple-shear)
-Model="FT-"
+Model="MRD-"
 
 CurrPath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Loop 
 # for closure in IBOF ORE
-for closure in hybrid IBOF ORE
+# for closure in hybrid IBOF ORE
+for closure in IBOF
 do
     # Collect .csv file corresponding to the closure (hybrid IBOF and ORE)
     dataFileName=$(find ~+ -type f -name "${closure}*.csv")

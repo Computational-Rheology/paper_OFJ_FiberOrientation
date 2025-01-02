@@ -15,6 +15,17 @@ NoColor='\033[0m'
 # Get directory from where the script is being run
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
+# Get the reference results file from the paper repository
+echo "Downloading file from GitHub..."
+curl -L "https://github.com/Computational-Rheology/paper_OFJ_FiberOrientation/blob/main/cases/disk_case/PostProcessData/IBOF_disk.csv" -o "$SCRIPT_DIR"
+# Check if the download was successful exit if not
+if [ "$?" -eq 0 ]; then
+    echo "File successfully downloaded to $SCRIPT_DIR"
+else
+    echo "Error downloading the file."
+    exit 1
+fi
+
 # Loop 
 # for closure in IBOF ORE
 for closure in IBOF

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-@author: Authors of manuscript #131 submitted to the OpenFOAM Journal.
- Author names were suppressed to allow the double-blind review process, they will be added at the end of the review
+@author: Authors of manuscript #131 published in the OpenFOAM Journal.
+  doi: https://doi.org/10.51560/ofj.v5.131 
 """
 
 #%% 
