@@ -17,7 +17,7 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Get the reference results file from the paper repository
 echo "Downloading file from GitHub to $SCRIPT_DIR"
-curl -L "https://github.com/Computational-Rheology/paper_OFJ_FiberOrientation/blob/main/cases/disk_case/PostProcessData/IBOF_disk.csv" -o "./IBOF_disk.csv"
+curl -L "https://raw.githubusercontent.com/Computational-Rheology/paper_OFJ_FiberOrientation/refs/heads/main/cases/disk_case/PostProcessData/IBOF_disk.csv" -o "./IBOF_disk.csv"
 # Check if the download was successful exit if not
 if [ "$?" -eq 0 ]; then
     echo "File successfully downloaded to $SCRIPT_DIR"

@@ -17,10 +17,10 @@
 ```
 ./runBatch_disk
 ```
-* The graphs and sampling points are stored in "svg" and "csv" formats, respectively, in folders .... *disk_case/IBOF/mesh<i>/postProcessing/sampling/<finalTime>*
+* The graphs and sampling points are stored in "svg" and "csv" formats, respectively, in folders .... *disk_case/IBOF/mesh`<i>`/postProcessing/sampling/`<finalTime>`*
 
 ## *Notes* :
 * The developed Python code requires the packages pandas, numpy and matplotlib (refer to the Python codes to )
-* **MCN - Add in runBatch_disk a command to copy the IBOF_disk.csv from the Repository**
+
 
 
