@@ -6,6 +6,35 @@ set -e  # exit on first error
 # Note: Load anaconda for running this script
 # Note: Activate OF2212 for running this script
 
+# Check if exactly one argument is provided
+if [ "$#" -ne 1 ]; then
+    echo "#############"
+    echo "Usage: $0 <argument> (Where <argument> can be either FT, MRD or iARD)"
+    echo "#############"
+    exit 1
+fi
+
+# Get the argument
+ARG="$1"
+CLOSURES=""
+
+# Use a case statement to define the closures to run
+case "$ARG" in
+    "FT")
+        CLOSURES="hybrid IBOF ORE."
+        ;;
+    "iARD")
+        CLOSURES="IBOF"
+        ;;
+    "MRD")
+        CLOSURES="IBOF"
+        ;;
+    *)
+        CLOSURES=""
+        echo "Unknown closure: $ARG, Usage: $0 <argument> (Where <argument> can be either FT, MRD or iARD)"
+        ;;
+esac
+
 # text colors 
 Green='\033[0;32m'   
 Orange='\033[0;33m'  
@@ -17,18 +46,24 @@ LINKED_FILE_PATH=$(readlink $0)
 SCRIPT_DIR=$(dirname "$LINKED_FILE_PATH")
 
 # Name of the model to append in the output images 
-# *(change this for each model in simple-shear)
-Model="MRD-"
+Model=$ARG
+echo "Model $ARG"
 
 CurrPath=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 # Loop 
 # for closure in IBOF ORE
 # for closure in hybrid IBOF ORE
-for closure in IBOF
+for closure in $CLOSURES
 do
     # Collect .csv file corresponding to the closure (hybrid IBOF and ORE)
-    dataFileName=$(find ~+ -type f -name "${closure}*.csv")
+    dataFileName=$(find ~+ -type f -name "${closure}_${Model}.csv")
+
+    # Check if the variable is null or empty
+    if [ -z "$dataFileName" ]; then
+        echo "Error: The variable dataFileName is null or empty. Stopping execution..."
+        exit 1
+    fi
 
     # Tell the user which file is currently being used
     echo "Using file: " $dataFileName
