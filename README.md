@@ -5,8 +5,8 @@ Repository associated to the paper entitled **An Open-Source Framework for Model
 ## The contents of the repository folders are the following: 
  * cases &rarr; Test cases reported in the paper
  * fiberOrientation &rarr; OpenFOAM code with the *functionObject* developed for solving the evolution of the 2nd-order orientation tensor 
- * fiberOrientationPython &rarr; Python codes developed to generate the reference solutions
- * fibersClosureSymbolic &rarr;  Python codes developed to generate the C-code code required to calculate the contractions between fourth- and second-order tensors required for the different closure models employed in the paper
+ * fiberOrientationPython &rarr; Python scripts developed to generate the reference solutions
+ * fibersClosureSymbolic &rarr;  Python scripts developed to generate the C-code code required to calculate the contractions between fourth- and second-order tensors required for the different closure models employed in the paper
  * myPimpleFoam &rarr; Custom version of pimpleFoam used to run the paper case s
  
 ## The scripts available in the repository's root folder have the following functionalities:

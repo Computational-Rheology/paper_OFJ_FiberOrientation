@@ -20,7 +20,7 @@
 * The graphs and sampling points are stored in "svg" and "csv" formats, respectively, in folders .... *disk_case/IBOF/mesh`<i>`/postProcessing/sampling/`<finalTime>`*
 
 ## *Notes* :
-* The developed Python code requires the packages pandas, numpy and matplotlib (refer to the Python codes to )
+* The developed Python script requires the packages pandas, numpy and matplotlib (refer to the Python scripts to )
 
 
 

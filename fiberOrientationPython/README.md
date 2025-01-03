@@ -27,7 +27,7 @@
 
 ----
 ## How to run? 
-* The codes are run with the following command:
+* The Python Scripts are run with the following command:
 '''
 python <file of case study>
 '''

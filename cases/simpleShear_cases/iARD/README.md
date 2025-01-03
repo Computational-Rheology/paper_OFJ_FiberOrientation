@@ -17,5 +17,5 @@
 ```
 ./runBatch iARD
 ```
-* The postprocessing Python code requires the following packages: *pandas*, *numpy* and *matplotlib*. Refer to the Python documentation to install these packages before running the script
+* The postprocessing Python script requires the following packages: *pandas*, *numpy* and *matplotlib*. Refer to the Python documentation to install these packages before running the script
 * The graphs and sampling points are stored, respectively, in "svg" and "csv" formats, in folders .... */simpleShear_cases/iARD/IBOF/mesh`<i>`/postProcessing/sampling/`<finalTime>`*
